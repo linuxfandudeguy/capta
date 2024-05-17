@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Please confirm you are not a robot</h2>
+        <canvas id="captchaCanvas" width="150" height="50"></canvas>
+        <input type="text" placeholder="Enter the text above" id="captchaInput">
+        <button class="button" onclick="verifyCaptcha()">Submit</button>
+    </div>
+
+    <script>
+        function generateRandomCaptcha(length) {
+            var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var captcha = "";
+            for (var i = 0; i < length; i++) {
+                var randomIndex = Math.floor(Math.random() * charset.length);
+                captcha += charset[randomIndex];
+            }
+            return captcha;
+        }
+
+        // Generate a random captcha when the page loads
+        var expectedCaptcha = generateRandomCaptcha(6);
+
+        var canvas = document.getElementById("captchaCanvas");
+        var ctx = canvas.getContext("2d");
+
+        function drawCaptcha() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "20px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText(expectedCaptcha, 10, 30);
+        }
+
+        function verifyCaptcha() {
+            // Get the entered captcha text
+            var captchaInput = document.getElementById("captchaInput").value.trim();
+            
+            // Check if the entered text matches the expected captcha text (case-insensitive)
+            if (captchaInput.toUpperCase() === expectedCaptcha.toUpperCase()) {
+                // Captcha verification successful
+                alert('Captcha verification successful. Initiating download...');
+                // Close the captcha window
+                window.close();
+                // Proceed with download or any other action
+            } else {
+                // Captcha verification failed
+                alert('Captcha verification failed. Please try again.');
+                // Clear the input field for another attempt
+                document.getElementById("captchaInput").value = "";
+                // Draw the same captcha image again
+                drawCaptcha();
+            }
+        }
+
+        // Draw the captcha image when the page loads
+        drawCaptcha();
+    </script>
+</body>
+</html>
